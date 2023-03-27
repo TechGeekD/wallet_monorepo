@@ -27,6 +27,12 @@ const WalletCardPage = ({ props }) => {
 		document.body.removeChild(link);
 	};
 
+	const timeZone = "Asia/Kolkata";
+	const getTimeZoneDate = (date: string, tz: string) => {
+		const timeZoneDate = new Date(date).toLocaleString("en-US", { timeZone: tz });
+		return new Date(timeZoneDate);
+	};
+
 	return (
 		<div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
 			<div className="flex items-center justify-between mb-4">
@@ -78,7 +84,7 @@ const WalletCardPage = ({ props }) => {
 													className="text-sm text-gray-500 truncate dark:text-gray-400"
 													title={tx["Transaction_Id"]}
 												>
-													{tx["Transaction_Id"]}
+													{getTimeZoneDate(tx["Date"], timeZone).toLocaleString()}
 												</p>
 											</div>
 											<div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white m-3">

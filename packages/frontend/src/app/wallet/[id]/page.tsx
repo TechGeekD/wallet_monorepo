@@ -73,7 +73,7 @@ const WalletDetailPage = async ({ params }) => {
 				<h1 className={styles.h1}>{name}&apos;s Wallet Balance</h1>
 				<form className={styles.form}>
 					<label className={styles.label} htmlFor="balance">
-						<p className={styles.p}>{balance}</p>
+						<p className={styles.p}>${balance}</p>
 					</label>
 					<button className={styles.button}>
 						<Link href={`/wallet-transaction/${walletId}`}>See Wallet Transactions</Link>

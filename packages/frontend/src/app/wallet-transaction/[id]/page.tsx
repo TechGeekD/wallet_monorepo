@@ -32,6 +32,7 @@ const getWalletTransactionsData = async (walletId: string, page: number = 0, lim
 				  Wallet_Id: walletId
 				  Transaction_Id: transactionId
 				  Transaction_Type: type
+				  Date: date
 				}
 			  }`,
 			variables: { walletId, page, limit },
