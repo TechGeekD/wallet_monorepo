@@ -1,0 +1,49 @@
+{
+	"name": "root",
+	"private": true,
+	"scripts": {
+		"create_lerna": "npx lerna create \"@wallet/ui\" ./packages --es-module --yes",
+		"bootstrap": "rimraf node_modules && npx lerna bootstrap",
+		"preclean": "yarn prebuild",
+		"prebuild": "npx lerna run prebuild && rimraf dist",
+		"export": "npx lerna run export --parallel --scope @wallet/frontend",
+		"start": "npx lerna run start",
+		"build": "npx lerna run build",
+		"start:dev": "npx lerna run start:dev",
+		"start:debug": "npx lerna run start:debug",
+		"start:prod": "npx lerna run start:prod",
+		"build:backend": "npx lerna run build --parallel --scope @wallet/backend",
+		"build:frontend": "npx lerna run build --parallel --scope @wallet/frontend",
+		"start:frontend": "npx lerna run start --parallel --scope @wallet/frontend",
+		"start:dev:frontend": "npx lerna run start:dev --parallel --scope @wallet/frontend",
+		"start:debug:frontend": "npx lerna run start:debug --parallel --scope @wallet/frontend",
+		"start:backend": "npx lerna run start --parallel --scope @wallet/backend",
+		"start:dev:backend": "npx lerna run start:dev --parallel --scope @wallet/backend",
+		"start:debug:backend": "npx lerna run start:debug --parallel --scope @wallet/backend",
+		"start:prod:backend": "npx lerna run start:prod --parallel --scope @wallet/backend",
+		"release:patch": "npx lerna version patch",
+		"clean": "npx lerna clean --yes",
+		"docker": "docker compose --verbose -p wallet up backend_dev --build -d"
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		]
+	},
+	"devDependencies": {
+		"lerna": "^6.5.1",
+		"@typescript-eslint/eslint-plugin": "^5.56.0",
+		"@typescript-eslint/parser": "^5.56.0",
+		"eslint": "^8.36.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"jest": "^29.5.0",
+		"prettier": "^2.8.6",
+		"source-map-support": "^0.5.21",
+		"ts-jest": "^29.0.5",
+		"ts-loader": "^9.4.2",
+		"ts-node": "^10.9.1",
+		"tsconfig-paths": "^4.1.2",
+		"typescript": "^5.0.2"
+	}
+}

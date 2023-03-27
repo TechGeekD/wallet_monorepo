@@ -1,0 +1,52 @@
+x-app:
+  &default-app
+  networks:
+    - webnet
+  env_file:
+    - .env
+  # restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+  stop_grace_period: "3s"
+  tty: true
+
+services:
+  frontend:
+    <<: *default-app
+    container_name: wallet_frontend
+    image: wallet_frontend
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      target: runner
+    ports:
+      - 80:${FRONTEND_PORT}
+      - 9229:9229
+    depends_on:
+      - backend
+  backend:
+    <<: *default-app
+    container_name: wallet_backend
+    image: wallet_backend
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: runner
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+      - 9228:9228
+    command: "yarn start:prod"
+    depends_on:
+      - database
+  database:
+    <<: *default-app
+    container_name: wallet_database
+    image: wallet_database
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: database
+    ports:
+      - 27018:${DATABASE_PORT}
+
+networks:
+  webnet:
+

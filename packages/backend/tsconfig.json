@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"paths": {
+			"@core/*": ["packages/backend/src/core/*"],
+			"@api/*": ["packages/backend/src/api/*"],
+			"@src/*": ["packages/backend/src/*"]
+		}
+	}
+}

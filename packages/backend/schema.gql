@@ -1,0 +1,94 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type WalletOutput {
+  """balance field"""
+  balance: Float
+
+  """name field"""
+  name: String!
+
+  """Wallet id field"""
+  id: String!
+}
+
+type walletTransactionOutput {
+  """description field"""
+  description: String!
+
+  """walletId field"""
+  walletId: String!
+
+  """amount field"""
+  amount: Float!
+
+  """type field"""
+  type: WALLET_TX_TYPE!
+
+  """Wallet id field"""
+  id: String!
+
+  """transactionId field"""
+  transactionId: String
+
+  """balance field"""
+  balance: Float
+}
+
+"""The supported colors."""
+enum WALLET_TX_TYPE {
+  """Wallet Credit Transaction"""
+  CREDIT
+
+  """Wallet DEBIT Transaction"""
+  DEBIT
+}
+
+type Query {
+  findAll: [WalletOutput!]!
+  findOneWallet(id: String!): WalletOutput!
+  getAllWalletTransaction(walletId: String!, page: Int!, limit: Int!): [walletTransactionOutput!]!
+  getWallet(walletId: String!): WalletOutput!
+}
+
+type Mutation {
+  createWallet(createWalletInput: WalletInput!): WalletOutput!
+  updateWallet(updateWalletInput: UpdateWalletInput!): WalletOutput!
+  removeWallet(id: Int!): WalletOutput!
+  setupWallet(setupWalletInput: WalletInput!): WalletOutput!
+  transactWallet(transactWalletInput: walletTransactionInput!): walletTransactionOutput!
+}
+
+input WalletInput {
+  """balance field"""
+  balance: Float
+
+  """name field"""
+  name: String!
+}
+
+input UpdateWalletInput {
+  """balance field"""
+  balance: Float
+
+  """name field"""
+  name: String
+
+  """Wallet id field"""
+  id: String!
+}
+
+input walletTransactionInput {
+  """description field"""
+  description: String!
+
+  """walletId field"""
+  walletId: String!
+
+  """amount field"""
+  amount: Float!
+
+  """type field"""
+  type: WALLET_TX_TYPE!
+}

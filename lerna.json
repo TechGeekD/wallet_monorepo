@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "useWorkspaces": true,
+  "version": "independent",
+  "npmClient": "yarn",
+  "registry": "https://registry.yarnpkg.com",
+  "pnpMode": true,
+  "nodeLinker": "node-modules",
+  "packages": ["packages/*"],
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": ["--no-progress"]
+    }
+  }
+}

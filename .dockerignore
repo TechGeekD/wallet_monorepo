@@ -1,0 +1,12 @@
+.dockerignore
+**/node_modules
+dist
+.git
+.tmp
+.vscode
+.github
+**/*.env*
+.yarn
+*.tsbuildinfo
+!.env.example
+!.env
