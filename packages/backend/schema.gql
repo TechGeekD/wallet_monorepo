@@ -48,7 +48,7 @@ enum WALLET_TX_TYPE {
 type Query {
   findAll: [WalletOutput!]!
   findOneWallet(id: String!): WalletOutput!
-  getAllWalletTransaction(walletId: String!, page: Int!, limit: Int!): [walletTransactionOutput!]!
+  getAllWalletTransaction(walletId: String!, skip: Int!, limit: Int!): [walletTransactionOutput!]!
   getWallet(walletId: String!): WalletOutput!
 }
 

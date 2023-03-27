@@ -58,7 +58,7 @@ export class WalletResolver {
 	@Query(() => [WalletTransactionOutput])
 	getAllWalletTransaction(
 		@Args("walletId", { name: "walletId" }) walletId: string,
-		@Args("page", { name: "skip", type: () => Int }) skip: number,
+		@Args("skip", { name: "skip", type: () => Int }) skip: number,
 		@Args("limit", { name: "limit", type: () => Int }) limit: number,
 	) {
 		return this.walletService.getTransactions(walletId, skip, limit);
