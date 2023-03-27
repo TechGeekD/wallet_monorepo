@@ -94,6 +94,7 @@ export class WalletTransaction {
 	@ApiProperty({ enum: Object.values(WALLET_TX_TYPE) })
 	readonly type: WALLET_TX_TYPE;
 
+	@Field(() => Date, { description: "created at field", nullable: true })
 	readonly createdAt?: Date;
 	readonly toResponseJSON?: Function;
 }

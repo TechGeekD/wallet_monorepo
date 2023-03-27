@@ -8,7 +8,10 @@ export class WalletOutput extends OmitType(Wallet, ["id"] as const) {
 }
 
 @ObjectType("walletTransactionOutput")
-export class WalletTransactionOutput extends OmitType(WalletTransaction, ["id"] as const) {
+export class WalletTransactionOutput extends OmitType(WalletTransaction, [
+	"id",
+	"createdAt",
+] as const) {
 	@Field({ description: "Wallet id field" })
 	id: string;
 
@@ -17,4 +20,7 @@ export class WalletTransactionOutput extends OmitType(WalletTransaction, ["id"] 
 
 	@Field(() => Float, { description: "balance field", nullable: true })
 	readonly balance: number;
+
+	@Field(() => Date, { description: "date field", nullable: true })
+	readonly date: Date;
 }

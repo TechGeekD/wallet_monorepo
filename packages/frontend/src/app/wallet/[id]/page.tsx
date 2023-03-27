@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "@styles/wallet.module.css";
+import WalletLogoutPage from "./[logout]";
 
 const getWalletData = async (walletId: string) => {
 	try {
@@ -77,6 +78,7 @@ const WalletDetailPage = async ({ params }) => {
 					<button className={styles.button}>
 						<Link href={`/wallet-transaction/${walletId}`}>See Wallet Transactions</Link>
 					</button>
+					<WalletLogoutPage />
 				</form>
 			</div>
 		</div>

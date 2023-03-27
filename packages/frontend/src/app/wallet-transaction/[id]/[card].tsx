@@ -39,9 +39,13 @@ const WalletCardPage = ({ props }) => {
 				>
 					View all
 				</a> */}
-				<button className="w-2/5" onClick={generateCsv}>
-					Download CSV
-				</button>
+				{walletTransactions.length ? (
+					<button className="w-2/5" onClick={generateCsv}>
+						Download CSV
+					</button>
+				) : (
+					<></>
+				)}
 			</div>
 			<div className="flow-root">
 				<div id="dialog-window">
@@ -54,42 +58,38 @@ const WalletCardPage = ({ props }) => {
 								No Wallet Transaction data Found
 							</p>
 						) : (
-							<>
-								<ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
-									{walletTransactions.map(tx => (
-										<li key={tx["Transaction_Id"]} className="py-3 sm:py-4">
-											<div className="flex items-center space-x-4">
-												<div className="flex-shrink-0 m-3">
-													<Image
-														className="w-8 h-8 rounded-full"
-														src={`https://i.pravatar.cc/300?img=${1}`}
-														// src={`https://i.pravatar.cc/300?u=${tx["Transaction_Id"]}`}
-														alt={tx["Transaction_Id"]}
-													/>
-												</div>
-												<div className="flex-1 min-w-0">
-													<p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-														{tx["Description"]}
-													</p>
-													<p
-														className="text-sm text-gray-500 truncate dark:text-gray-400"
-														title={tx["Transaction_Id"]}
-													>
-														{tx["Transaction_Id"]}
-													</p>
-												</div>
-												<div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white m-3">
-													<p
-														style={{ color: tx["Transaction_Type"] == "CREDIT" ? "green" : "red" }}
-													>
-														${tx["Wallet_Amount"]}
-													</p>
-												</div>
+							<ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
+								{walletTransactions.map(tx => (
+									<li key={tx["Transaction_Id"]} className="py-3 sm:py-4">
+										<div className="flex items-center space-x-4">
+											<div className="flex-shrink-0 m-3">
+												<Image
+													className="w-8 h-8 rounded-full"
+													src={`https://i.pravatar.cc/300?img=${1}`}
+													// src={`https://i.pravatar.cc/300?u=${tx["Transaction_Id"]}`}
+													alt={tx["Transaction_Id"]}
+												/>
 											</div>
-										</li>
-									))}
-								</ul>
-							</>
+											<div className="flex-1 min-w-0">
+												<p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+													{tx["Description"]}
+												</p>
+												<p
+													className="text-sm text-gray-500 truncate dark:text-gray-400"
+													title={tx["Transaction_Id"]}
+												>
+													{tx["Transaction_Id"]}
+												</p>
+											</div>
+											<div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white m-3">
+												<p style={{ color: tx["Transaction_Type"] == "CREDIT" ? "green" : "red" }}>
+													${tx["Wallet_Amount"]}
+												</p>
+											</div>
+										</div>
+									</li>
+								))}
+							</ul>
 						)}
 					</div>
 				</div>
