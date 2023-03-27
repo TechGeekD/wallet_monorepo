@@ -1,7 +1,32 @@
+"use client";
 import Image from "next/image";
+import { stringify } from "csv-stringify";
 
 const WalletCardPage = ({ props }) => {
 	const { walletTransactions } = props;
+
+	const generateCsv = async () => {
+		const csvData = await new Promise<string>((resolve, reject) => {
+			stringify(walletTransactions, { header: true }, (err, output) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(output);
+				}
+			});
+		});
+
+		const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.setAttribute("href", url);
+		link.setAttribute("download", "walletTransactions.csv");
+		link.style.visibility = "hidden";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+
 	return (
 		<div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
 			<div className="flex items-center justify-between mb-4">
@@ -14,6 +39,9 @@ const WalletCardPage = ({ props }) => {
 				>
 					View all
 				</a> */}
+				<button className="w-2/5" onClick={generateCsv}>
+					Download CSV
+				</button>
 			</div>
 			<div className="flow-root">
 				<div id="dialog-window">

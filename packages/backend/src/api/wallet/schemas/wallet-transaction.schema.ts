@@ -29,8 +29,8 @@ export interface WalletTransactionDocument extends WalletTransaction, Document {
 @Schema({
 	timestamps: true,
 })
-@ObjectType("walletTransaction")
-@InputType("walletTransactionInput")
+@ObjectType("WalletTransaction")
+@InputType("WalletTransactionInput")
 export class WalletTransaction {
 	id?: any;
 

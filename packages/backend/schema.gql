@@ -57,7 +57,7 @@ type Mutation {
   updateWallet(updateWalletInput: UpdateWalletInput!): WalletOutput!
   removeWallet(id: Int!): WalletOutput!
   setupWallet(setupWalletInput: WalletInput!): WalletOutput!
-  transactWallet(transactWalletInput: walletTransactionInput!): walletTransactionOutput!
+  transactWallet(transactWalletInput: WalletTransactionInput!): walletTransactionOutput!
 }
 
 input WalletInput {
@@ -79,7 +79,7 @@ input UpdateWalletInput {
   id: String!
 }
 
-input walletTransactionInput {
+input WalletTransactionInput {
   """description field"""
   description: String!
 
