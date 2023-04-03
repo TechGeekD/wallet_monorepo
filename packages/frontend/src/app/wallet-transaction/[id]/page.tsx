@@ -14,7 +14,6 @@ const runGqlProxy = async gqlQuery => {
 	};
 
 	const res = await fetch(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/graphql`, options);
-	console.log("=== gqlProxyData ===");
 	return res.json();
 };
 
@@ -41,7 +40,9 @@ const getWalletTransactionsData = async (walletId: string, page = 0, limit = 5) 
 
 		return runGqlProxy(gqlQuery);
 	} catch (error) {
-		return { error };
+		console.log("### getWalletTransactionsData ###");
+		console.log(error);
+		return { errors: [error] };
 	}
 };
 
@@ -51,9 +52,9 @@ const WalletTransactionDetailsPage = async props => {
 
 	const page = parseInt(searchParams?.page ?? 0);
 
-	const { data, error } = await getWalletTransactionsData(walletId, page);
+	const { data, errors } = await getWalletTransactionsData(walletId, page);
 
-	if (error) return <p>Error loading wallet transaction</p>;
+	if (errors) return <p>Error loading wallet transaction</p>;
 
 	const { walletTransactions } = data;
 
@@ -65,38 +66,42 @@ const WalletTransactionDetailsPage = async props => {
 					<br />
 					<div className="relative">
 						<div className="absolute right-0">
-							<button className={styles.button}>
-								<Link
-									href={`${WalletTransactionDetailsPage.routeName(walletId)}?page=${page + 1}`}
-									replace={true}
-								>
-									Next Page
-								</Link>
-							</button>
+							<Link
+								href={`${WalletTransactionDetailsPage.routeName(walletId)}?page=${page + 1}`}
+								replace={true}
+								className="text-center"
+							>
+								<button className={styles.button}>Next Page</button>
+							</Link>
 						</div>
 						<div className="absolute left-0">
 							{page > 0 ? (
 								<>
-									<button className={styles.button}>
-										<Link
-											href={`${WalletTransactionDetailsPage.routeName(walletId)}?page=${page - 1}`}
-											replace={true}
-										>
-											Previous Page
-										</Link>
-									</button>
+									<Link
+										href={`${WalletTransactionDetailsPage.routeName(walletId)}?page=${page - 1}`}
+										replace={true}
+										className="text-center"
+									>
+										<button className={styles.button}>Previous Page</button>
+									</Link>
 								</>
 							) : (
 								<></>
 							)}
 						</div>
 					</div>
-					<Link href={"/wallet-transaction"} replace={true} className="mb-5 mt-20 text-center">
-						<button className={styles.button}>Add Wallet Transaction</button>
-					</Link>
-					<Link href={WalletDetailPage.routeName(walletId)} replace={true} className="text-center">
-						<button className={styles.button}>Check Balance</button>
-					</Link>
+					<div className="flex items-center justify-between mb-2">
+						<Link
+							href={WalletDetailPage.routeName(walletId)}
+							replace={true}
+							className="mt-16 text-center"
+						>
+							<button className={styles.button}>Check Balance</button>
+						</Link>
+						<Link href={"/wallet-transaction"} className="mt-16 text-center">
+							<button className={styles.button}>Add Wallet Transaction</button>
+						</Link>
+					</div>
 				</form>
 			</div>
 		</div>

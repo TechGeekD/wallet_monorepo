@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { randomUUID } from "crypto";
@@ -65,6 +65,8 @@ export class WalletService {
 
 	async setupWallet(walletData: Wallet): Promise<any> {
 		const balance = walletData?.balance ?? 0;
+		if (balance < 0) throw new BadRequestException("Enter valid wallet balance");
+
 		const savedWallet = await this.createWallet({ ...walletData, balance });
 
 		const transaction = await this.createWalletTransaction({
@@ -88,22 +90,29 @@ export class WalletService {
 	async transact(transactWalletInput: WalletTransaction): Promise<any> {
 		const wallet = await this.findByIdWallet(transactWalletInput.walletId);
 		if (!wallet) {
-			return { message: "Wallet not found" };
+			throw new NotFoundException("Wallet not found");
 		}
 
-		const amount = transactWalletInput.amount;
+		let amount = transactWalletInput.amount;
 
 		if (amount === 0) {
-			return { message: "Invalid amount" };
+			throw new BadRequestException("Invalid amount");
 		}
 
-		// if (wallet.balance + amount < 0) {
-		// 	return { message: "Insufficient balance" };
-		// }
+		if (amount < 0) {
+			transactWalletInput.type = WALLET_TX_TYPE.DEBIT;
+			amount = -amount;
+		}
 
-		if (WALLET_TX_TYPE.CREDIT == transactWalletInput.type) wallet.balance += amount;
-		if (WALLET_TX_TYPE.DEBIT == transactWalletInput.type) wallet.balance -= amount;
-		if (amount < 0) wallet.balance -= -amount;
+		if (transactWalletInput.type == WALLET_TX_TYPE.DEBIT) {
+			if (wallet.balance - amount < 0) {
+				throw new BadRequestException("Insufficient balance");
+			}
+
+			wallet.balance -= amount;
+		} else if (transactWalletInput.type == WALLET_TX_TYPE.CREDIT) {
+			wallet.balance += amount;
+		}
 
 		const transaction: WalletTransaction = await this.createWalletTransaction({
 			walletId: wallet._id,
@@ -115,17 +124,6 @@ export class WalletService {
 		});
 
 		await Promise.all([transaction, wallet.save()]);
-
-		Logger.error({
-			id: transaction.id,
-			amount: this.roundUpTo4DecimalPlaces(transaction.amount),
-			balance: transaction.balance,
-			description: transaction.description,
-			walletId: transaction.walletId,
-			transactionId: transaction.transactionId,
-			createdAt: transaction.createdAt,
-			type: transaction.type,
-		});
 
 		return {
 			id: transaction.id,
@@ -147,7 +145,6 @@ export class WalletService {
 			.sort({ createdAt: -1 })
 			.select("-__v -walletId");
 
-		Logger.error(transactions, skip, limit, "****** transactions ******");
 		return transactions.map(t => ({ ...t.toResponseJSON(), walletId }));
 	}
 

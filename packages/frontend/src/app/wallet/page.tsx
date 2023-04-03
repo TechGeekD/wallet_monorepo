@@ -30,13 +30,12 @@ const setupWalletData = async (userName: string, balance: number) => {
 			cache: "no-store",
 		};
 
-		console.log(`/api/graphql`, "NEXT_PUBLIC_FRONTEND_URL");
 		const res = await fetch(`/api/graphql`, options);
-		console.log("--- getWalletData ---");
-		console.log(typeof res);
 		return res.json();
 	} catch (error) {
-		return { error };
+		console.log("### setupWalletData ###");
+		console.log(error);
+		return { errors: [error] };
 	}
 };
 
@@ -53,11 +52,13 @@ const WalletSetupPage = () => {
 			return;
 		}
 
-		const { data, error } = await setupWalletData(userName, balance);
+		const { data, errors } = await setupWalletData(userName, balance);
 
-		if (error) {
-			alert("Error storing wallet");
-			return console.log(error);
+		if (errors) {
+			errors.forEach(error => {
+				alert(`Error: ${error.message}`);
+			});
+			return;
 		}
 
 		setWalletId(data?.wallet?.id);
@@ -69,10 +70,7 @@ const WalletSetupPage = () => {
 	const validateForm = () => {
 		const balanceElem: HTMLInputElement = document.querySelector("#balance");
 
-		console.log("balance balance balance balance");
-		console.log(balanceElem.value);
-
-		const isValidForm: boolean = balanceElem.value && parseFloat(balanceElem.value) > 0;
+		const isValidForm: boolean = balanceElem.value && parseFloat(balanceElem.value) >= 0;
 
 		if (!isValidForm) {
 			alert("Please enter valid balance (in positive value).");

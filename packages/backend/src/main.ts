@@ -5,7 +5,10 @@ import morgan from "morgan";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-	const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+	const app = await NestFactory.create<NestFastifyApplication>(
+		AppModule,
+		new FastifyAdapter({ logger: { level: "error" } }),
+	);
 
 	const timeZone = "Asia/Kolkata";
 	morgan.token("date", (req, res, tz) => {

@@ -17,12 +17,8 @@ export async function getGQLData(query) {
 		cache: "no-store",
 	};
 
-	console.log("**** apiRoute:getGQLData ****");
-	console.log(`${process.env.NEXT_PUBLIC_API_URL}/graphql`, "NEXT_PUBLIC_API_URL");
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/graphql`, options);
 	const data = await res.json();
-	// console.log("**** apiRoute:getGQLData ****");
-	console.log(JSON.stringify(data));
 
 	return JSON.stringify(data);
 }

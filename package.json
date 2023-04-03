@@ -18,6 +18,7 @@
 		"start:frontend": "npx lerna run start --parallel --scope @wallet/frontend",
 		"start:dev:frontend": "npx lerna run start:dev --parallel --scope @wallet/frontend",
 		"start:debug:frontend": "npx lerna run start:debug --parallel --scope @wallet/frontend",
+		"start:prod:frontend": "npx lerna run start:prod --parallel --scope @wallet/frontend",
 		"start:backend": "npx lerna run start --parallel --scope @wallet/backend",
 		"start:dev:backend": "npx lerna run start:dev --parallel --scope @wallet/backend",
 		"start:debug:backend": "npx lerna run start:debug --parallel --scope @wallet/backend",

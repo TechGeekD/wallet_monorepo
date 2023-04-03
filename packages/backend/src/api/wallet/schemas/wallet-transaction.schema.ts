@@ -91,7 +91,7 @@ export class WalletTransaction {
 	@Transform(type => type.value.toUpperCase())
 	@IsEnum(WALLET_TX_TYPE)
 	@ApiProperty({ enum: Object.values(WALLET_TX_TYPE) })
-	readonly type: WALLET_TX_TYPE;
+	type: WALLET_TX_TYPE;
 
 	@Field(() => Date, { description: "created at field", nullable: true })
 	readonly createdAt?: Date;

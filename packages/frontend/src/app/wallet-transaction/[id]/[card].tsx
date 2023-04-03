@@ -1,9 +1,17 @@
 "use client";
 import Image from "next/image";
 import { stringify } from "csv-stringify";
+import { useEffect, useState } from "react";
 
 const WalletCardPage = ({ props }) => {
+	type SortType = "date" | "amount";
 	const { walletTransactions } = props;
+	const [transactions, setTransactions] = useState(walletTransactions);
+	const [sortKey, setSortKey] = useState<SortType>("date");
+
+	useEffect(() => {
+		setTransactions(walletTransactions);
+	}, [walletTransactions]);
 
 	const generateCsv = async () => {
 		const csvData = await new Promise<string>((resolve, reject) => {
@@ -27,6 +35,27 @@ const WalletCardPage = ({ props }) => {
 		document.body.removeChild(link);
 	};
 
+	const sortWalletTransactions = (key: SortType) => {
+		const sortedTransactions = [...walletTransactions].sort((a, b) => {
+			if (key === "date") {
+				return new Date(a["Date"]).getTime() - new Date(b["Date"]).getTime();
+			} else if (key === "amount") {
+				return parseFloat(a["Wallet_Amount"]) - parseFloat(b["Wallet_Amount"]);
+			} else {
+				return 0;
+			}
+
+			// if (a['Wallet_Amount'] === b['Wallet_Amount]) {
+			// 	return new Date(a["Date"]).getTime() - new Date(b["Date"]).getTime();
+			// } else {
+			// 	return parseFloat(a["Wallet_Amount"]) - parseFloat(b["Wallet_Amount"]);
+			// }
+		});
+
+		setTransactions(sortedTransactions);
+		setSortKey(key);
+	};
+
 	// const timeZone = "Asia/Kolkata";
 	// const getTimeZoneDate = (date: string, tz: string) => {
 	// 	const timeZoneDate = new Date(date).toLocaleString("en-US", { timeZone: tz });
@@ -39,10 +68,20 @@ const WalletCardPage = ({ props }) => {
 				<h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
 					Wallet Transaction Data
 				</h5>
+			</div>
+			<div className="flex items-center justify-between mb-4">
 				{walletTransactions.length ? (
-					<button className="w-2/5" onClick={generateCsv}>
-						Download CSV
-					</button>
+					<>
+						<button
+							type="button"
+							onClick={() => sortWalletTransactions(sortKey == "date" ? "amount" : "date")}
+						>
+							Sort By {sortKey == "date" ? "Amount" : "Date"}
+						</button>
+						<button type="button" onClick={generateCsv}>
+							Download CSV
+						</button>
+					</>
 				) : (
 					<></>
 				)}
@@ -50,7 +89,7 @@ const WalletCardPage = ({ props }) => {
 			<div className="flow-root">
 				<div id="dialog-window">
 					<div id="scrollable-content">
-						{!walletTransactions.length ? (
+						{!transactions.length ? (
 							<p
 								style={{ height: "50vh" }}
 								className="flex justify-center justify-items-center justify-self-center align-items-center text-red-600"
@@ -59,7 +98,7 @@ const WalletCardPage = ({ props }) => {
 							</p>
 						) : (
 							<ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
-								{walletTransactions.map(tx => (
+								{transactions.map(tx => (
 									<li key={tx["Transaction_Id"]} className="py-3 sm:py-4">
 										<div className="flex items-center space-x-4">
 											<div className="flex-shrink-0 m-3">

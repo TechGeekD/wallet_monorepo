@@ -29,15 +29,15 @@ const getWalletData = async (walletId: string) => {
 	} catch (error) {
 		console.log("### getWalletData ###");
 		console.log(error);
-		return { error };
+		return { errors: [error] };
 	}
 };
 
 const WalletDetailPage = async ({ params }) => {
 	const walletId = params.id;
-	const { data, error } = await getWalletData(walletId);
+	const { data, errors } = await getWalletData(walletId);
 
-	if (error) return <p>Error loading wallet</p>;
+	if (errors) return <p>Error loading wallet</p>;
 
 	const {
 		wallet: { name, balance },

@@ -45,10 +45,11 @@ const transactWallet = async (
 		};
 
 		const res = await fetch(`/api/graphql`, options);
-		console.log("--- getWalletTransactionData ---");
 		return res.json();
 	} catch (error) {
-		return { error };
+		console.log("### transactWallet ###");
+		console.log(error);
+		return { errors: [error] };
 	}
 };
 
@@ -62,24 +63,30 @@ const WalletTransactionPage = () => {
 	const handleForm = async event => {
 		event.preventDefault();
 
-		const { data, error } = await transactWallet(walletId, description, amount, type);
+		const { data, errors } = await transactWallet(walletId, description, amount, type);
 
-		if (error) {
-			alert("Error storing wallet transaction");
-			return console.log(error);
+		if (errors) {
+			errors.forEach(error => {
+				alert(`Error: ${error.message}`);
+			});
+			return;
 		}
 
 		setWalletId(data?.walletTransaction?.walletId);
 
 		// else successful
 		return router.replace(
-			WalletTransactionDetailsPage.routeName(data?.walletTransaction?.walletId),
+			WalletTransactionDetailsPage.routeName(data?.walletTransaction?.walletId) +
+				`?u=${Math.round(Math.random())}`,
 		);
 	};
 
 	const handleTypeClick = () => {
 		if (type == "CREDIT") setType("DEBIT");
-		else setType("CREDIT");
+		else {
+			if (amount < 0) setAmount(-amount);
+			setType("CREDIT");
+		}
 	};
 
 	return (
@@ -91,7 +98,7 @@ const WalletTransactionPage = () => {
 						<p className={styles.p}>Enter Description</p>
 						<input
 							className={styles.input}
-							onChange={e => setDescription(e.target.value)}
+							onChange={e => setDescription(e?.target?.value ?? "")}
 							required
 							type="string"
 							name="description"
@@ -103,7 +110,12 @@ const WalletTransactionPage = () => {
 						<p className={styles.p}>Enter Amount</p>
 						<input
 							className={styles.input}
-							onChange={e => setAmount(parseFloat(e.target.value))}
+							onChange={e => {
+								const amount = parseFloat(e?.target?.value ?? "0");
+								if (amount < 0) setType("DEBIT");
+								setAmount(amount);
+							}}
+							value={amount}
 							required
 							type="number"
 							name="amount"
@@ -116,7 +128,14 @@ const WalletTransactionPage = () => {
 					</label>
 					<div className={styles.center}>
 						<div className={styles["toggle-pill-color"]}>
-							<input type="checkbox" id="pill" name="check" onChange={handleTypeClick} />
+							<input
+								type="checkbox"
+								id="pill"
+								name="check"
+								value={type}
+								checked={type == "CREDIT"}
+								onChange={handleTypeClick}
+							/>
 							<label htmlFor="pill"></label>
 						</div>
 					</div>
