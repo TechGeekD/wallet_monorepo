@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "@styles/wallet-transactions.module.css";
 import WalletCardPage from "./[card]";
+import WalletDetailPage from "@/app/wallet/[id]/page";
 
 const runGqlProxy = async gqlQuery => {
 	const options: RequestInit = {
@@ -17,7 +18,7 @@ const runGqlProxy = async gqlQuery => {
 	return res.json();
 };
 
-const getWalletTransactionsData = async (walletId: string, page: number = 0, limit: number = 5) => {
+const getWalletTransactionsData = async (walletId: string, page = 0, limit = 5) => {
 	try {
 		const gqlQuery = {
 			query: `query getWalletTransactions($walletId: String!, $page: Int!, $limit: Int!) {
@@ -44,34 +45,17 @@ const getWalletTransactionsData = async (walletId: string, page: number = 0, lim
 	}
 };
 
-const WalletTransactionsPage = async props => {
+const WalletTransactionDetailsPage = async props => {
 	const { params, searchParams } = props;
-	const walletId = params.id;
+	const walletId = params?.id;
+
 	const page = parseInt(searchParams?.page ?? 0);
-	console.log(props);
-	console.log(page);
-	const {
-		data: { walletTransactions },
-	} = await getWalletTransactionsData(walletId, page);
-	// console.log(JSON.stringify(walletTransactions));
-	// const [walletTransactions, setWalletTransactionData] = useState([]);
-	// const [isLoading, setLoading] = useState(true);
 
-	// useEffect(() => {
-	// 	setLoading(true);
-	// 	getWalletTransactionsData(walletId).then(({ data, error }) => {
-	// 		setLoading(false);
-	// 		if (error) {
-	// 			return console.log(error);
-	// 		}
-	// 		if (data?.walletTransactions) {
-	// 			setWalletTransactionData(data.walletTransactions);
-	// 		}
-	// 	});
-	// }, []);
+	const { data, error } = await getWalletTransactionsData(walletId, page);
 
-	// if (isLoading) return <p>Loading...</p>;
-	// if (!walletTransactions.length) return <p>No Wallet Transaction data</p>;
+	if (error) return <p>Error loading wallet transaction</p>;
+
+	const { walletTransactions } = data;
 
 	return (
 		<div className={styles.wrapper}>
@@ -82,7 +66,10 @@ const WalletTransactionsPage = async props => {
 					<div className="relative">
 						<div className="absolute right-0">
 							<button className={styles.button}>
-								<Link href={`/wallet-transaction/${walletId}?page=${page + 1}`} replace={true}>
+								<Link
+									href={`${WalletTransactionDetailsPage.routeName(walletId)}?page=${page + 1}`}
+									replace={true}
+								>
 									Next Page
 								</Link>
 							</button>
@@ -91,7 +78,10 @@ const WalletTransactionsPage = async props => {
 							{page > 0 ? (
 								<>
 									<button className={styles.button}>
-										<Link href={`/wallet-transaction/${walletId}?page=${page - 1}`} replace={true}>
+										<Link
+											href={`${WalletTransactionDetailsPage.routeName(walletId)}?page=${page - 1}`}
+											replace={true}
+										>
 											Previous Page
 										</Link>
 									</button>
@@ -101,20 +91,17 @@ const WalletTransactionsPage = async props => {
 							)}
 						</div>
 					</div>
-					<button className="mb-5 mt-20">
-						<Link href="/wallet-transaction" replace={true}>
-							Add Wallet Transaction
-						</Link>
-					</button>
-					<button className={styles.button}>
-						<Link href={`/wallet/${walletId}`} replace={true}>
-							Check Balance
-						</Link>
-					</button>
+					<Link href={"/wallet-transaction"} replace={true} className="mb-5 mt-20 text-center">
+						<button className={styles.button}>Add Wallet Transaction</button>
+					</Link>
+					<Link href={WalletDetailPage.routeName(walletId)} replace={true} className="text-center">
+						<button className={styles.button}>Check Balance</button>
+					</Link>
 				</form>
 			</div>
 		</div>
 	);
 };
 
-export default WalletTransactionsPage;
+WalletTransactionDetailsPage.routeName = (walletId: string) => `/wallet-transaction/${walletId}`;
+export default WalletTransactionDetailsPage;

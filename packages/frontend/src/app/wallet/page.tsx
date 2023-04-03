@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import styles from "@styles/wallet.module.css";
 
 import { useLocalStorage } from "../../utils";
+import WalletDetailPage from "./[id]/page";
 
 const setupWalletData = async (userName: string, balance: number) => {
 	try {
@@ -39,31 +40,45 @@ const setupWalletData = async (userName: string, balance: number) => {
 	}
 };
 
-const WalletSetupPage = ({ params }) => {
-	const [walletId, setWalletId] = useLocalStorage("walletId", params.id ?? "");
+const WalletSetupPage = () => {
+	const [, setWalletId] = useLocalStorage("walletId", "");
 	const [userName, setUserName] = useState("");
 	const [balance, setBalance] = useState(0);
 	const router = useRouter();
 
-	// if (walletId.length) return router.replace(`wallet/${walletId}`);
-
 	const handleForm = async event => {
 		event.preventDefault();
 
-		if (walletId.length) return router.replace(`wallet/${walletId}`);
+		if (!validateForm()) {
+			return;
+		}
 
 		const { data, error } = await setupWalletData(userName, balance);
-		console.log("*** getWalletData ***");
-		console.log(data);
-
-		setWalletId(data?.wallet?.id);
 
 		if (error) {
+			alert("Error storing wallet");
 			return console.log(error);
 		}
 
+		setWalletId(data?.wallet?.id);
+
 		// else successful
-		return router.replace(`wallet/${data?.wallet?.id}`);
+		return router.replace(WalletDetailPage.routeName(data?.wallet?.id));
+	};
+
+	const validateForm = () => {
+		const balanceElem: HTMLInputElement = document.querySelector("#balance");
+
+		console.log("balance balance balance balance");
+		console.log(balanceElem.value);
+
+		const isValidForm: boolean = balanceElem.value && parseFloat(balanceElem.value) > 0;
+
+		if (!isValidForm) {
+			alert("Please enter valid balance (in positive value).");
+		}
+
+		return isValidForm;
 	};
 
 	return (
@@ -75,7 +90,7 @@ const WalletSetupPage = ({ params }) => {
 						<p className={styles.p}>Enter Your Name</p>
 						<input
 							className={styles.input}
-							onChange={e => setUserName(e.target.value)}
+							onChange={e => setUserName(e?.target?.value ?? "")}
 							required
 							type="string"
 							name="userName"
@@ -88,11 +103,16 @@ const WalletSetupPage = ({ params }) => {
 						<input
 							className={styles.input}
 							value={balance}
-							onChange={e => setBalance(parseFloat(e.target.value))}
+							onChange={e => setBalance(parseFloat(e?.target?.value ?? "0"))}
 							type="number"
+							// inputMode="numeric"
 							name="balance"
 							id="balance"
 							placeholder="Balance"
+							required
+							minLength={1}
+							pattern="[0-9]{1,15}"
+							title="Enter balance value in positive number"
 						/>
 					</label>
 					<br></br>

@@ -20,7 +20,6 @@ export class Wallet {
 	})
 	@Type(() => Number)
 	@IsDecimal()
-	@IsPositive()
 	@ApiProperty({ type: Number })
 	@Field(() => Float, { description: "balance field", nullable: true })
 	balance?: number;

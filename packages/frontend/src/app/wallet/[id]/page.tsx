@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "@styles/wallet.module.css";
 import WalletLogoutPage from "./[logout]";
+import WalletTransactionDetailsPage from "@/app/wallet-transaction/[id]/page";
 
 const getWalletData = async (walletId: string) => {
 	try {
@@ -24,7 +25,6 @@ const getWalletData = async (walletId: string) => {
 		};
 
 		const res = await fetch(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/graphql`, options);
-		console.log("/// getWalletData ///");
 		return res.json();
 	} catch (error) {
 		console.log("### getWalletData ###");
@@ -34,37 +34,15 @@ const getWalletData = async (walletId: string) => {
 };
 
 const WalletDetailPage = async ({ params }) => {
-	const walletId = params.id ?? "";
-	const data = await getWalletData(walletId);
-	console.log("getWalletData getWalletData getWalletData");
-	console.log(walletId);
-	console.log(data);
+	const walletId = params.id;
+	const { data, error } = await getWalletData(walletId);
+
+	if (error) return <p>Error loading wallet</p>;
+
 	const {
-		data: {
-			wallet: { name, balance },
-		},
+		wallet: { name, balance },
 	} = data;
 
-	// const [userName, setUserName] = useState("");
-	// const [balance, setBalance] = useState(0);
-	// const router = useRouter();
-	// const [isLoading, setLoading] = useState(true);
-
-	// useEffect(() => {
-	// 	setLoading(true);
-	// 	getWalletData(walletId).then(({ data, error }) => {
-	// 		setLoading(false);
-	// 		if (error) {
-	// 			return console.log(error);
-	// 		}
-	// 		if (data?.wallet) {
-	// 			setUserName(data.wallet.name);
-	// 			setBalance(data.wallet.balance);
-	// 		}
-	// 	});
-	// }, []);
-
-	// if (isLoading) return <p>Loading...</p>;
 	if (!name) return <p>No Wallet data</p>;
 
 	return (
@@ -75,14 +53,16 @@ const WalletDetailPage = async ({ params }) => {
 					<label className={styles.label} htmlFor="balance">
 						<p className={styles.p}>${balance}</p>
 					</label>
-					<button className={styles.button}>
-						<Link href={`/wallet-transaction/${walletId}`}>See Wallet Transactions</Link>
-					</button>
+					<Link href={WalletTransactionDetailsPage.routeName(walletId)} className="text-center">
+						<button className={styles.button}>See Wallet Transactions</button>
+					</Link>
 					<WalletLogoutPage />
 				</form>
 			</div>
 		</div>
 	);
 };
+
+WalletDetailPage.routeName = (walletId: string) => `/wallet/${walletId}`;
 
 export default WalletDetailPage;

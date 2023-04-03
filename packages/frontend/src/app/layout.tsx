@@ -1,4 +1,3 @@
-import Head from "next/head";
 import "./globals.css";
 
 export const metadata = {
@@ -9,9 +8,6 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
-			{/* <Head>
-				<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.0.1/tailwind.min.css" rel="stylesheet" />
-			</Head> */}
 			<body>{children}</body>
 		</html>
 	);

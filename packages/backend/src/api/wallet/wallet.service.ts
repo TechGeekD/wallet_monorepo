@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { randomUUID } from "crypto";
 import {
 	Wallet,
 	WalletDocument,
@@ -10,7 +11,6 @@ import {
 } from "./schemas";
 
 import { UpdateWalletInput } from "./dto/update-wallet.input";
-import { randomUUID } from "crypto";
 
 @Injectable()
 export class WalletService {
@@ -33,10 +33,10 @@ export class WalletService {
 	}
 
 	async createWalletTransaction(walletTransactionData: WalletTransaction) {
-		const balance = this.roundUpTo4DecimalPlaces(walletTransactionData.balance);
+		const amount = this.roundUpTo4DecimalPlaces(walletTransactionData.amount);
 		const walletTransaction = new this.walletTransactionModel({
 			...walletTransactionData,
-			balance,
+			amount,
 		});
 		return walletTransaction.save();
 	}
@@ -64,7 +64,7 @@ export class WalletService {
 	}
 
 	async setupWallet(walletData: Wallet): Promise<any> {
-		const balance = walletData.balance ?? 0;
+		const balance = walletData?.balance ?? 0;
 		const savedWallet = await this.createWallet({ ...walletData, balance });
 
 		const transaction = await this.createWalletTransaction({
@@ -77,7 +77,7 @@ export class WalletService {
 		});
 
 		return {
-			id: savedWallet._id,
+			id: savedWallet.id,
 			balance: savedWallet.balance,
 			transactionId: transaction.transactionId,
 			name: savedWallet.name,
@@ -97,9 +97,9 @@ export class WalletService {
 			return { message: "Invalid amount" };
 		}
 
-		if (wallet.balance + amount < 0) {
-			return { message: "Insufficient balance" };
-		}
+		// if (wallet.balance + amount < 0) {
+		// 	return { message: "Insufficient balance" };
+		// }
 
 		if (WALLET_TX_TYPE.CREDIT == transactWalletInput.type) wallet.balance += amount;
 		if (WALLET_TX_TYPE.DEBIT == transactWalletInput.type) wallet.balance -= amount;
@@ -115,6 +115,17 @@ export class WalletService {
 		});
 
 		await Promise.all([transaction, wallet.save()]);
+
+		Logger.error({
+			id: transaction.id,
+			amount: this.roundUpTo4DecimalPlaces(transaction.amount),
+			balance: transaction.balance,
+			description: transaction.description,
+			walletId: transaction.walletId,
+			transactionId: transaction.transactionId,
+			createdAt: transaction.createdAt,
+			type: transaction.type,
+		});
 
 		return {
 			id: transaction.id,
@@ -136,7 +147,7 @@ export class WalletService {
 			.sort({ createdAt: -1 })
 			.select("-__v -walletId");
 
-		Logger.debug(transactions, skip, limit, "****** transactions ******");
+		Logger.error(transactions, skip, limit, "****** transactions ******");
 		return transactions.map(t => ({ ...t.toResponseJSON(), walletId }));
 	}
 

@@ -8,6 +8,7 @@
 	"main": "dist/src/main.js",
 	"scripts": {
 		"prebuild": "rimraf dist",
+		"prestart:prod": "yarn build",
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start": "nest start",

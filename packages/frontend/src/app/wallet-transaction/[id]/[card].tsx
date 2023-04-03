@@ -27,11 +27,11 @@ const WalletCardPage = ({ props }) => {
 		document.body.removeChild(link);
 	};
 
-	const timeZone = "Asia/Kolkata";
-	const getTimeZoneDate = (date: string, tz: string) => {
-		const timeZoneDate = new Date(date).toLocaleString("en-US", { timeZone: tz });
-		return new Date(timeZoneDate);
-	};
+	// const timeZone = "Asia/Kolkata";
+	// const getTimeZoneDate = (date: string, tz: string) => {
+	// 	const timeZoneDate = new Date(date).toLocaleString("en-US", { timeZone: tz });
+	// 	return new Date(timeZoneDate).toLocaleString("en-US").replace(/s+/g, " ");
+	// };
 
 	return (
 		<div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -39,12 +39,6 @@ const WalletCardPage = ({ props }) => {
 				<h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
 					Wallet Transaction Data
 				</h5>
-				{/* <a
-					href="#"
-					className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
-				>
-					View all
-				</a> */}
 				{walletTransactions.length ? (
 					<button className="w-2/5" onClick={generateCsv}>
 						Download CSV
@@ -72,8 +66,9 @@ const WalletCardPage = ({ props }) => {
 												<Image
 													className="w-8 h-8 rounded-full"
 													src={`https://i.pravatar.cc/300?img=${1}`}
-													// src={`https://i.pravatar.cc/300?u=${tx["Transaction_Id"]}`}
 													alt={tx["Transaction_Id"]}
+													width={100}
+													height={100}
 												/>
 											</div>
 											<div className="flex-1 min-w-0">
@@ -84,7 +79,7 @@ const WalletCardPage = ({ props }) => {
 													className="text-sm text-gray-500 truncate dark:text-gray-400"
 													title={tx["Transaction_Id"]}
 												>
-													{getTimeZoneDate(tx["Date"], timeZone).toLocaleString()}
+													{tx["Date"]}
 												</p>
 											</div>
 											<div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white m-3">

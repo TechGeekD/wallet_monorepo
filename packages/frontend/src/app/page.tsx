@@ -4,17 +4,18 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import styles from "@styles/page.module.css";
 import { useLocalStorage } from "@utils/index";
+import WalletDetailPage from "./wallet/[id]/page";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
-	const [walletId, setWalletId] = useLocalStorage<string>("walletId", "");
+	const [walletId] = useLocalStorage<string>("walletId", "");
 
 	return (
 		<main className={styles.main}>
 			<div className={styles.description}>
 				<h1 className={styles.title}>
-					Go To <Link href={`/wallet/${walletId}`}>Wallet Page!</Link>
+					Go To <Link href={WalletDetailPage.routeName(walletId)}>Wallet Page!</Link>
 				</h1>
 				<p>
 					Get started by editing&nbsp;
@@ -99,4 +100,5 @@ const Home = () => {
 	);
 };
 
+Home.routeName = () => "/";
 export default Home;

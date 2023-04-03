@@ -34,6 +34,9 @@ type walletTransactionOutput {
 
   """balance field"""
   balance: Float
+
+  """date field"""
+  date: DateTime
 }
 
 """The supported colors."""
@@ -44,6 +47,11 @@ enum WALLET_TX_TYPE {
   """Wallet DEBIT Transaction"""
   DEBIT
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   findAll: [WalletOutput!]!
@@ -91,4 +99,7 @@ input WalletTransactionInput {
 
   """type field"""
   type: WALLET_TX_TYPE!
+
+  """created at field"""
+  createdAt: DateTime
 }

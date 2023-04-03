@@ -67,7 +67,6 @@ export class WalletTransaction {
 	@Field(() => Float, { description: "amount field" })
 	@Type(() => Number)
 	@IsNumber()
-	@IsPositive()
 	@ApiProperty()
 	readonly amount: number;
 

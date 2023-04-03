@@ -11,6 +11,7 @@
 		"build": "npx lerna run build",
 		"start:dev": "npx lerna run start:dev",
 		"start:debug": "npx lerna run start:debug",
+		"start:debugi": "yarn build:frontend && yarn start:prod:frontend && yarn start:debug:backend",
 		"start:prod": "npx lerna run start:prod",
 		"build:backend": "npx lerna run build --parallel --scope @wallet/backend",
 		"build:frontend": "npx lerna run build --parallel --scope @wallet/frontend",
@@ -23,7 +24,7 @@
 		"start:prod:backend": "npx lerna run start:prod --parallel --scope @wallet/backend",
 		"release:patch": "npx lerna version patch",
 		"clean": "npx lerna clean --yes",
-		"docker": "docker compose --verbose -p wallet up backend_dev --build -d"
+		"docker": "docker compose -p wallet up frontend  --build -d"
 	},
 	"workspaces": {
 		"packages": [
@@ -31,13 +32,13 @@
 		]
 	},
 	"devDependencies": {
-		"lerna": "^6.5.1",
 		"@typescript-eslint/eslint-plugin": "^5.56.0",
 		"@typescript-eslint/parser": "^5.56.0",
 		"eslint": "^8.36.0",
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-plugin-prettier": "^4.2.1",
 		"jest": "^29.5.0",
+		"lerna": "^6.5.1",
 		"prettier": "^2.8.6",
 		"source-map-support": "^0.5.21",
 		"ts-jest": "^29.0.5",
@@ -45,5 +46,6 @@
 		"ts-node": "^10.9.1",
 		"tsconfig-paths": "^4.1.2",
 		"typescript": "^5.0.2"
-	}
+	},
+	"dependencies": {}
 }

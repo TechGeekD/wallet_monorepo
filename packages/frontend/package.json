@@ -2,8 +2,9 @@
 	"name": "@wallet/frontend",
 	"version": "0.1.0",
 	"private": true,
-	"main": "dist/src/app/page.js",
+	"main": ".next/static/chunks/main.js",
 	"scripts": {
+		"prestart:prod": "yarn build",
 		"prebuild": "rimraf .next",
 		"export": "next export -o _static",
 		"build": "next build",
@@ -14,16 +15,17 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@types/node": "18.15.5",
-		"@types/react": "18.0.28",
+		"@types/node": "18.15.11",
+		"@types/react": "18.0.32",
 		"@types/react-dom": "18.0.11",
 		"csv-stringify": "^6.3.0",
-		"eslint": "8.36.0",
+		"eslint": "8.37.0",
 		"eslint-config-next": "13.2.4",
 		"next": "13.2.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"rimraf": "^4.4.1",
-		"typescript": "5.0.2"
+		"sharp": "^0.32.0",
+		"typescript": "5.0.3"
 	}
 }

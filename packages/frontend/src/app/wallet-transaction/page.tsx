@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import styles from "@styles/wallet.module.css";
 
 import { useLocalStorage } from "../../utils";
+import WalletTransactionDetailsPage from "./[id]/page";
 
 const transactWallet = async (
 	walletId: string,
@@ -51,28 +52,29 @@ const transactWallet = async (
 	}
 };
 
-const WalletSetupPage = ({ params }) => {
+const WalletTransactionPage = () => {
 	const [walletId, setWalletId] = useLocalStorage("walletId", "");
 	const [description, setDescription] = useState("");
 	const [amount, setAmount] = useState(0);
 	const [type, setType] = useState<"DEBIT" | "CREDIT">("DEBIT");
 	const router = useRouter();
 
-	// if (walletId.length) return router.replace(`wallet/${walletId}`);
-
 	const handleForm = async event => {
 		event.preventDefault();
 
 		const { data, error } = await transactWallet(walletId, description, amount, type);
-		setWalletId(data?.walletTransaction?.walletId);
 
 		if (error) {
+			alert("Error storing wallet transaction");
 			return console.log(error);
 		}
 
+		setWalletId(data?.walletTransaction?.walletId);
+
 		// else successful
-		console.log(data);
-		return router.replace(`wallet-transaction/${data?.walletTransaction?.walletId}`);
+		return router.replace(
+			WalletTransactionDetailsPage.routeName(data?.walletTransaction?.walletId),
+		);
 	};
 
 	const handleTypeClick = () => {
@@ -85,18 +87,6 @@ const WalletSetupPage = ({ params }) => {
 			<div className={styles["form-wrapper"]}>
 				<h1 className={styles.h1}>Wallet Setup</h1>
 				<form onSubmit={handleForm} className={styles.form}>
-					<label className={styles.label} htmlFor="amount">
-						<p className={styles.p}>Enter Amount</p>
-						<input
-							className={styles.input}
-							onChange={e => setAmount(parseFloat(e.target.value))}
-							required
-							type="number"
-							name="amount"
-							id="amount"
-							placeholder="Amount"
-						/>
-					</label>
 					<label className={styles.label} htmlFor="description">
 						<p className={styles.p}>Enter Description</p>
 						<input
@@ -107,6 +97,18 @@ const WalletSetupPage = ({ params }) => {
 							name="description"
 							id="description"
 							placeholder="description"
+						/>
+					</label>
+					<label className={styles.label} htmlFor="amount">
+						<p className={styles.p}>Enter Amount</p>
+						<input
+							className={styles.input}
+							onChange={e => setAmount(parseFloat(e.target.value))}
+							required
+							type="number"
+							name="amount"
+							id="amount"
+							placeholder="Amount"
 						/>
 					</label>
 					<label className={styles.label}>
@@ -133,4 +135,5 @@ const WalletSetupPage = ({ params }) => {
 	);
 };
 
-export default WalletSetupPage;
+WalletTransactionPage.routeName = () => `/wallet-transaction`;
+export default WalletTransactionPage;
