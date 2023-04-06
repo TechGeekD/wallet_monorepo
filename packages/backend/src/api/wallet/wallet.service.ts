@@ -11,6 +11,7 @@ import {
 } from "./schemas";
 
 import { UpdateWalletInput } from "./dto/update-wallet.input";
+import { roundUpTo4DecimalPlaces } from "@core/utils";
 
 @Injectable()
 export class WalletService {
@@ -20,24 +21,17 @@ export class WalletService {
 		private walletTransactionModel: Model<WalletTransactionDocument>,
 	) {}
 
-	roundUpTo4DecimalPlaces(num: number): number {
-		const precision = 4;
-		const roundingFactor = Math.pow(10, precision);
-		return Math.ceil(num * roundingFactor) / roundingFactor;
-	}
-
 	async createWallet(walletData: Wallet) {
-		const balance = this.roundUpTo4DecimalPlaces(walletData.balance);
-		const wallet = new this.walletModel({ ...walletData, balance });
+		const wallet = new this.walletModel({ ...walletData });
+		wallet.isNew = true; // to use pre save hook
 		return wallet.save();
 	}
 
 	async createWalletTransaction(walletTransactionData: WalletTransaction) {
-		const amount = this.roundUpTo4DecimalPlaces(walletTransactionData.amount);
 		const walletTransaction = new this.walletTransactionModel({
 			...walletTransactionData,
-			amount,
 		});
+		walletTransaction.isNew = true; // to use pre save hook
 		return walletTransaction.save();
 	}
 
@@ -93,7 +87,7 @@ export class WalletService {
 			throw new NotFoundException("Wallet not found");
 		}
 
-		let amount = transactWalletInput.amount;
+		let amount = roundUpTo4DecimalPlaces(transactWalletInput.amount);
 
 		if (amount === 0) {
 			throw new BadRequestException("Invalid amount");
@@ -127,7 +121,7 @@ export class WalletService {
 
 		return {
 			id: transaction.id,
-			amount: this.roundUpTo4DecimalPlaces(transaction.amount),
+			amount: transaction.amount,
 			balance: transaction.balance,
 			description: transaction.description,
 			walletId: transaction.walletId,

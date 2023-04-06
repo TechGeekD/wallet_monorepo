@@ -68,7 +68,7 @@ export class WalletTransaction {
 	@Type(() => Number)
 	@IsNumber()
 	@ApiProperty()
-	readonly amount: number;
+	amount: number;
 
 	@Prop({
 		required: true,

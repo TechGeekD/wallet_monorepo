@@ -1,3 +1,4 @@
+import { LogLevel } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import morgan from "morgan";
@@ -5,10 +6,13 @@ import morgan from "morgan";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-	const app = await NestFactory.create<NestFastifyApplication>(
-		AppModule,
-		new FastifyAdapter({ logger: { level: "error" } }),
-	);
+	const isProd = process.env?.NODE_ENV?.toLowerCase() == "production";
+	const prodLevel: LogLevel[] = ["log", "error", "warn"];
+	const debugLevel: LogLevel[] = ["debug", "verbose", ...prodLevel];
+
+	const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+		logger: isProd ? prodLevel : debugLevel,
+	});
 
 	const timeZone = "Asia/Kolkata";
 	morgan.token("date", (req, res, tz) => {

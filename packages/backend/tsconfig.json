@@ -4,9 +4,9 @@
 		"outDir": "./dist",
 		"baseUrl": "./",
 		"paths": {
-			"@core/*": ["packages/backend/src/core/*"],
-			"@api/*": ["packages/backend/src/api/*"],
-			"@src/*": ["packages/backend/src/*"]
+			"@core/*": ["src/core/*"],
+			"@api/*": ["src/api/*"],
+			"@src/*": ["src/*"]
 		}
 	}
 }
